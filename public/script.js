@@ -5,6 +5,16 @@ let ready = false;
 let imagesLoaded = 0;
 let totalImages = 0;
 let photosArray = [];
+let initialLoad = true;
+
+// Unsplash API
+let initialCount = 5;
+let apiUrl = `/api?count=${initialCount}`;
+
+// Update count after all images loaded initially
+function updateAPIURLWithNewCount(count) {
+  apiUrl = `/api?count=${count}`;
+}
 
 // Check if all images were loaded
 function imageLoaded() {
@@ -48,21 +58,20 @@ function displayPhotos() {
   });
 }
 
-// // Unsplash API
-const count = 30;
-let apiUrl = `/api?count=${count}`;
-
 // Get photos from Unsplash API
 async function getPhotos() {
   try {
     const response = await fetch(apiUrl);
     photosArray = await response.json();
     displayPhotos();
+    if (initialLoad) {
+      updateAPIURLWithNewCount(30);
+      initialLoad = false;
+    }
   } catch (error) {
     // Catch error here
   }
 }
-
 // Check to see whether scrolling to bottom of the page loads more pages
 window.addEventListener("scroll", () => {
   if (
